@@ -1,9 +1,11 @@
-# https://waha.devlike.pro/docs/how-to/install/
+version: "3.8"
+
 services:
-  # Just to connect
+  # Painel principal (dashboard)
   waha-dashboard:
-    restart: unless-stopped
     image: devlikeapro/waha-plus:latest
+    container_name: waha-dashboard
+    restart: unless-stopped
     ports:
       - '127.0.0.1:3000:3000/tcp'
     env_file:
@@ -11,9 +13,11 @@ services:
     environment:
       - WAHA_WORKER_ID=waha-dashboard
 
+  # Worker 1 (com webhook do n8n)
   waha1:
-    restart: unless-stopped
     image: devlikeapro/waha-plus:latest
+    container_name: waha1
+    restart: unless-stopped
     ports:
       - '127.0.0.1:3001:3000/tcp'
     volumes:
@@ -24,21 +28,23 @@ services:
       - WAHA_WORKER_ID=waha1
       - WAHA_BASE_URL=http://localhost:3001
       - WHATSAPP_DEFAULT_ENGINE=NOWEB
-      # MongoDB
       - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
-      # S3
+      - WHATSAPP_HOOK_URL=https://teste-production-ec11.up.railway.app/webhook/aca33175-5e48-4c53-9167-21589c89d3e4
+      - WHATSAPP_HOOK_EVENTS=message
       - WAHA_MEDIA_STORAGE=S3
       - WAHA_S3_REGION=eu-west-2
       - WAHA_S3_BUCKET=waha
       - WAHA_S3_ACCESS_KEY_ID=minioadmin
       - WAHA_S3_SECRET_ACCESS_KEY=minioadmin
-      - WAHA_S3_ENDPOINT=http://minio:9000 # Not required if you're using AWS S3
-      - WAHA_S3_FORCE_PATH_STYLE=True # Required for Minio
-      - WAHA_S3_PROXY_FILES=True # Required for docker-compose setup
+      - WAHA_S3_ENDPOINT=http://minio:9000
+      - WAHA_S3_FORCE_PATH_STYLE=True
+      - WAHA_S3_PROXY_FILES=True
 
+  # Worker 2 (sem webhook)
   waha2:
-    restart: unless-stopped
     image: devlikeapro/waha-plus:latest
+    container_name: waha2
+    restart: unless-stopped
     ports:
       - '127.0.0.1:3002:3000/tcp'
     volumes:
@@ -49,33 +55,27 @@ services:
       - WAHA_WORKER_ID=waha2
       - WAHA_BASE_URL=http://localhost:3002
       - WHATSAPP_DEFAULT_ENGINE=NOWEB
-      # MongoDB
       - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
-      # S3
       - WAHA_MEDIA_STORAGE=S3
       - WAHA_S3_REGION=eu-west-2
       - WAHA_S3_BUCKET=waha
       - WAHA_S3_ACCESS_KEY_ID=minioadmin
       - WAHA_S3_SECRET_ACCESS_KEY=minioadmin
-      - WAHA_S3_ENDPOINT=http://minio:9000 # Not required if you're using AWS S3
-      - WAHA_S3_FORCE_PATH_STYLE=True # Required for Minio
-      - WAHA_S3_PROXY_FILES=True # Required for docker-compose setup
+      - WAHA_S3_ENDPOINT=http://minio:9000
+      - WAHA_S3_FORCE_PATH_STYLE=True
+      - WAHA_S3_PROXY_FILES=True
 
-  # NOTE: Only if you're using MongoDB
-  # https://waha.devlike.pro/docs/how-to/storages/#sessions---mongodb
-  # Comment this block if you're not using MongoDB
+  # MongoDB
   mongodb:
     image: mongo
     container_name: mongodb
+    restart: always
     ports:
       - '127.0.0.1:27017:27017/tcp'
     volumes:
       - mongodb_data:/data/db
-    restart: always
 
-  # NOTE: Only if you're using S3 to save media files
-  # https://waha.devlike.pro/docs/how-to/storages/#media---s3
-  # Comment this block if you're using S3
+  # Minio (S3 local)
   minio:
     image: quay.io/minio/minio
     container_name: minio
@@ -92,6 +92,5 @@ services:
     command: server /data --console-address ":9001"
 
 volumes:
-  # NOTE: Only if you're using MongoDB
   mongodb_data: {}
   minio_data: {}
