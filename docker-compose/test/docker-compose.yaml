@@ -26,7 +26,7 @@ services:
       - .env
     environment:
       - WAHA_WORKER_ID=waha1
-      - WAHA_BASE_URL=http://localhost:3001
+      - WAHA_BASE_URL=http://waha1:3000
       - WHATSAPP_DEFAULT_ENGINE=NOWEB
       - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
       - WHATSAPP_HOOK_URL=https://teste-production-ec11.up.railway.app/webhook/aca33175-5e48-4c53-9167-21589c89d3e4
@@ -53,7 +53,7 @@ services:
       - .env
     environment:
       - WAHA_WORKER_ID=waha2
-      - WAHA_BASE_URL=http://localhost:3002
+      - WAHA_BASE_URL=http://waha1:3001
       - WHATSAPP_DEFAULT_ENGINE=NOWEB
       - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
       - WAHA_MEDIA_STORAGE=S3
