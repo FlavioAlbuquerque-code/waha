@@ -2,7 +2,6 @@ services:
   waha:
     restart: always
     container_name: waha
-    # image: devlikeapro/waha:latest
     image: devlikeapro/waha-plus:latest
     ports:
       - '3000:3000/tcp'
@@ -18,13 +17,13 @@ services:
       - WAHA_MEDIA_STORAGE=LOCAL
       - WHATSAPP_FILES_LIFETIME=0
       - WHATSAPP_FILES_FOLDER=/app/.media
+      - WHATSAPP_HOOK_URL=https://teste-production-ec11.up.railway.app/webhook/aca33175-5e48-4c53-9167-21589c89d3e4
+      - WHATSAPP_HOOK_EVENTS=message
 
   n8n:
     image: docker.n8n.io/n8nio/n8n
     container_name: n8n
     restart: always
-    environment:
-      - WEBHOOK_URL=http://n8n:5678
     ports:
       - '5678:5678'
     volumes:
