@@ -29,7 +29,7 @@ services:
       - WAHA_BASE_URL=http://localhost:3001
       - WHATSAPP_DEFAULT_ENGINE=WEBJS
       - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
-      - WHATSAPP_HOOK_URL=https://teste-production-ec11.up.railway.app/webhook/aca33175-5e48-4c53-9167-21589c89d3e4
+      - WHATSAPP_HOOK_URL=https://teste-production-ec11.up.railway.app/webhook/54e69510-5ca5-4ec9-af98-64350e98ea16
       - WHATSAPP_HOOK_EVENTS=message
 
   # MongoDB (armazenamento de sessões)
