@@ -1,96 +1,46 @@
 version: "3.8"
 
 services:
-  # Painel principal (dashboard)
+  # Painel para escanear o QR Code
   waha-dashboard:
-    image: devlikeapro/waha-plus:latest
+    image: devlikeapro/waha-plus:chrome
     container_name: waha-dashboard
     restart: unless-stopped
     ports:
-      - '127.0.0.1:3000:3000/tcp'
+      - '3000:3000'
     env_file:
       - .env
     environment:
       - WAHA_WORKER_ID=waha-dashboard
 
-  # Worker 1 (com webhook do n8n)
+  # Instância principal do WhatsApp
   waha1:
-    image: devlikeapro/waha-plus:latest
+    image: devlikeapro/waha-plus:chrome
     container_name: waha1
     restart: unless-stopped
     ports:
-      - '127.0.0.1:3001:3000/tcp'
+      - '3001:3000'
     volumes:
-      - './.media:/app/.media'
+      - './.sessions:/app/.sessions'
     env_file:
       - .env
     environment:
       - WAHA_WORKER_ID=waha1
       - WAHA_BASE_URL=http://localhost:3001
-      - WHATSAPP_DEFAULT_ENGINE=NOWEB
+      - WHATSAPP_DEFAULT_ENGINE=WEBJS
       - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
       - WHATSAPP_HOOK_URL=https://teste-production-ec11.up.railway.app/webhook/aca33175-5e48-4c53-9167-21589c89d3e4
       - WHATSAPP_HOOK_EVENTS=message
-      - WAHA_MEDIA_STORAGE=S3
-      - WAHA_S3_REGION=eu-west-2
-      - WAHA_S3_BUCKET=waha
-      - WAHA_S3_ACCESS_KEY_ID=minioadmin
-      - WAHA_S3_SECRET_ACCESS_KEY=minioadmin
-      - WAHA_S3_ENDPOINT=http://minio:9000
-      - WAHA_S3_FORCE_PATH_STYLE=True
-      - WAHA_S3_PROXY_FILES=True
 
-  # Worker 2 (sem webhook)
-  waha2:
-    image: devlikeapro/waha-plus:latest
-    container_name: waha2
-    restart: unless-stopped
-    ports:
-      - '127.0.0.1:3002:3000/tcp'
-    volumes:
-      - './.media:/app/.media'
-    env_file:
-      - .env
-    environment:
-      - WAHA_WORKER_ID=waha2
-      - WAHA_BASE_URL=http://localhost:3002
-      - WHATSAPP_DEFAULT_ENGINE=NOWEB
-      - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
-      - WAHA_MEDIA_STORAGE=S3
-      - WAHA_S3_REGION=eu-west-2
-      - WAHA_S3_BUCKET=waha
-      - WAHA_S3_ACCESS_KEY_ID=minioadmin
-      - WAHA_S3_SECRET_ACCESS_KEY=minioadmin
-      - WAHA_S3_ENDPOINT=http://minio:9000
-      - WAHA_S3_FORCE_PATH_STYLE=True
-      - WAHA_S3_PROXY_FILES=True
-
-  # MongoDB
+  # MongoDB (armazenamento de sessões)
   mongodb:
     image: mongo
     container_name: mongodb
     restart: always
     ports:
-      - '127.0.0.1:27017:27017/tcp'
+      - '27017:27017'
     volumes:
       - mongodb_data:/data/db
 
-  # Minio (S3 local)
-  minio:
-    image: quay.io/minio/minio
-    container_name: minio
-    restart: always
-    ports:
-      - '127.0.0.1:9000:9000'
-      - '127.0.0.1:9001:9001'
-    environment:
-      MINIO_REGION: 'eu-west-2'
-      MINIO_ROOT_USER: 'minioadmin'
-      MINIO_ROOT_PASSWORD: 'minioadmin'
-    volumes:
-      - minio_data:/data
-    command: server /data --console-address ":9001"
-
 volumes:
   mongodb_data: {}
-  minio_data: {}
