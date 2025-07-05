@@ -12,8 +12,8 @@ services:
     environment:
       - WHATSAPP_DEFAULT_ENGINE=WEBJS
       - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
-      - WAHA_BASE_URL=https://waha-production-xxxxx.up.railway.app # ajuste isso com sua URL do Railway
-      - WHATSAPP_HOOK_URL=https://n8n-production-yyyyy.up.railway.app/webhook/entrada # troque pelo link correto do n8n
+      - WAHA_BASE_URL=waha-production-db82.up.railway.app # ajuste isso com sua URL do Railway
+      - WHATSAPP_HOOK_URL=http://0.0.0.0:5678/webhook/webhook # troque pelo link correto do n8n
       - WHATSAPP_HOOK_EVENTS=message
 
   mongodb:
