@@ -1,29 +1,25 @@
+version: "3.8"
+
 services:
   waha:
     image: devlikeapro/waha-plus:chrome
     container_name: waha
-    restart: always
     ports:
-      - '3000:3000' # expõe a porta para o dashboard e API
+      - '3000:3000'
     volumes:
       - './.sessions:/app/.sessions'
     env_file:
       - .env
-    environment:
-      - WHATSAPP_DEFAULT_ENGINE=WEBJS
-      - WHATSAPP_SESSIONS_MONGO_URL=mongodb://mongodb:27017
-      - WAHA_BASE_URL=waha-production-db82.up.railway.app # ajuste isso com sua URL do Railway
-      - WHATSAPP_HOOK_URL=http://0.0.0.0:5678/webhook/webhook # troque pelo link correto do n8n
-      - WHATSAPP_HOOK_EVENTS=message
+    restart: always
 
   mongodb:
     image: mongo
     container_name: mongodb
-    restart: always
     ports:
       - '27017:27017'
     volumes:
       - mongodb_data:/data/db
+    restart: always
 
 volumes:
   mongodb_data: {}
